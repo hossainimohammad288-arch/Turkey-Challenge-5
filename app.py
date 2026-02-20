@@ -4,17 +4,12 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import LabelEncoder
 
-# -----------------------------
-# Page config
-# -----------------------------
+
 st.set_page_config(
     page_title="Earthquake Building Damage Prediction",
     layout="centered"
 )
 
-# -----------------------------
-# Custom CSS (FINAL FIX)
-# -----------------------------
 st.markdown(
     """
 <style>
@@ -153,9 +148,6 @@ details > div {
     unsafe_allow_html=True
 )
 
-# -----------------------------
-# Flag + Project Info
-# -----------------------------
 col_flag, col_info = st.columns([1, 4])
 
 with col_flag:
@@ -178,30 +170,19 @@ with col_info:
 
 st.markdown("---")
 
-# -----------------------------
-# Title
-# -----------------------------
+
 st.markdown("## 🏗️ Earthquake Building Damage Prediction")
 st.write("Predict structural damage based on building and site characteristics")
 
-# -----------------------------
-# Load models
-# -----------------------------
 with open("models/model_forest_classifier.pickle", "rb") as f:
     clf_model = pickle.load(f)
 
 with open("models/model_tree_regressor.pickle", "rb") as f:
     reg_model = pickle.load(f)
 
-# -----------------------------
-# Load dataset
-# -----------------------------
 data = pd.read_csv("building_damage.csv")
 data = data.drop("Unnamed: 0", axis=1)
 
-# -----------------------------
-# Occupancy Mapping
-# -----------------------------
 occ_type_display = {
     "Residential": ["RES1", "RES3", "RES4"],
     "Commercial": ["COM1", "COM2", "COM3", "COM4", "COM7", "COM8"],
@@ -212,9 +193,6 @@ occ_type_display = {
     "Governmental": ["GOV1"]
 }
 
-# -----------------------------
-# Encoders
-# -----------------------------
 encoders = {}
 for col in data.columns:
     if data[col].dtype == "object":
@@ -222,9 +200,6 @@ for col in data.columns:
         data[col] = le.fit_transform(data[col])
         encoders[col] = le
 
-# -----------------------------
-# Structural Type Mapping
-# -----------------------------
 struct_type_display = {
     "Unreinforced Masonry (URM)": "URM",
     "Steel Moment Frame (S1)": "S1",
@@ -234,9 +209,6 @@ struct_type_display = {
     "Reinforced Concrete Shear Wall (C1)": "C1",
 }
 
-# -----------------------------
-# Inputs
-# -----------------------------
 st.subheader("🔢 Input Features")
 
 struct_display_choice = st.selectbox(
@@ -256,9 +228,6 @@ no_stories = st.number_input("Number of Stories", 0, 30, 0)
 magnitude = st.number_input("Earthquake Magnitude", value=5.0)
 distance = st.number_input("Distance from Epicenter (km)", value=3.0)
 
-# -----------------------------
-# Encode
-# -----------------------------
 X = np.array([[
     encoders["struct_typ"].transform([struct_typ])[0],
     encoders["occ_type"].transform([occ_type_code])[0],
@@ -268,9 +237,6 @@ X = np.array([[
     distance
 ]])
 
-# -----------------------------
-# Predict
-# -----------------------------
 if st.button("🚀 Predict Damage"):
     meandamage_pred = reg_model.predict(X)[0]
     damage_class_pred = clf_model.predict(X)[0]
@@ -291,9 +257,6 @@ if st.button("🚀 Predict Damage"):
 
     st.success("Prediction completed successfully ✅")
 
-# -----------------------------
-# Model Results
-# -----------------------------
 st.markdown("---")
 st.subheader("📈 Model Performance Summary")
 
