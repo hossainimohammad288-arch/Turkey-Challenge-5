@@ -190,7 +190,7 @@ st.write("Predict structural damage based on building and site characteristics")
 with open("models/model_forest_classifier.pickle", "rb") as f:
     clf_model = pickle.load(f)
 
-with open("models/model_forest_regressor.pickle", "rb") as f:
+with open("models/model_tree_regressor.pickle", "rb") as f:
     reg_model = pickle.load(f)
 
 # -----------------------------
